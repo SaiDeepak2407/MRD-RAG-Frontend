@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Diagnosis Tools | MRD-RAG</title>
+  <link rel="stylesheet" href="../css/styles.css">
+  <style>
+    /* Chatbot layout styling */
+    .chat-container {
+      display: flex;
+      height: 75vh;
+      background: #f9f9f9; 
+      border-radius: 12px;
+      overflow: hidden;
+      margin-top: 30px;
+    }
+    .chat-sidebar {
+      width: 25%;
+      background: #fff;
+      border-right: 1px solid #ddd;
+      display: flex;
+      flex-direction: column;
+    }
+    .chat-sidebar-header {
+      padding: 15px;
+      border-bottom: 1px solid #ddd;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .chat-sidebar-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 10px;
+    }
+    .chat-sidebar-item {
+      padding: 10px;
+      margin-bottom: 8px;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .chat-sidebar-item:hover {
+      background: #f0f0f0;
+    }
+    .chat-sidebar-item.active {
+      background: #fdecea;
+      border-left: 3px solid #dc2626;
+    }
+    .chat-main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: #fafafa;
+    }
+    .chat-messages {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+    }
+    .chat-message {
+      margin-bottom: 15px;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .chat-message.user {
+      justify-content: flex-end;
+    }
+    .chat-bubble {
+      padding: 10px 15px;
+      border-radius: 15px;
+      max-width: 70%;
+      white-space: pre-wrap;
+    }
+    .chat-bubble.user {
+      background: #2563eb;
+      color: white;
+      border-bottom-right-radius: 2px;
+    }
+    .chat-bubble.bot {
+      background: white;
+      border: 1px solid #ddd;
+      border-bottom-left-radius: 2px;
+      color: #333;
+    }
+    .chat-input-container {
+      padding: 15px;
+      background: white;
+      border-top: 1px solid #ddd;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .chat-input-container textarea {
+      flex: 1;
+      padding: 10px;
+      font-size: 15px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      resize: none;
+    }
+    .chat-input-container button {
+      background: #dc2626;
+      color: white;
+      border: none;
+      padding: 10px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .chat-input-container button:hover {
+      background: #b91c1c;
+    }
+    .empty-chat {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      flex: 1;
+      color: #777;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-content">
+      <div class="logo">
+        <div class="logo-icon">⚕</div>
+        <span>MRD-RAG Smart Diagnosis</span>
+      </div>
+      <nav>
+        <ul>
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="diagnosis.html" class="active">Diagnosis Chatbot</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <h1 style="text-align:center; margin-top: 20px;">Smart Diagnosis Chat</h1>
+
+    <div class="chat-container">
+      <!-- Sidebar -->
+      <div class="chat-sidebar">
+        <div class="chat-sidebar-header">
+          <h3>Chat History</h3>
+          <button id="newChatBtn" title="New Chat" style="background:none;border:none;font-size:20px;cursor:pointer;">➕</button>
+        </div>
+        <div class="chat-sidebar-list" id="chatHistory"></div>
+      </div>
+
+      <!-- Chat Area -->
+      <div class="chat-main">
+        <div class="chat-messages" id="chatMessages">
+          <div class="empty-chat" id="emptyChat">
+            <h2>Start a new diagnosis</h2>
+            <p>Click the ➕ button in the sidebar to begin.</p>
+          </div>
+        </div>
+        <div class="chat-input-container">
+          <textarea id="userInput" placeholder="Describe your symptoms here..."></textarea>
+          <button id="sendBtn">Send</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+
+
+  <script>
+    // === Basic Local Chat Logic (no Google API) ===
+    const chatHistoryEl = document.getElementById('chatHistory');
+    const chatMessagesEl = document.getElementById('chatMessages');
+    const userInputEl = document.getElementById('userInput');
+    const sendBtn = document.getElementById('sendBtn');
+    const newChatBtn = document.getElementById('newChatBtn');
+    const emptyChatEl = document.getElementById('emptyChat');
+
+    let chats = [];
+    let activeChat = null;
+
+    // Create new chat
+    function startNewChat() {
+      const newChat = {
+        id: Date.now(),
+        title: "New Diagnosis",
+        messages: []
+      };
+      chats.push(newChat);
+      activeChat = newChat;
+      renderChatHistory();
+      renderMessages();
+    }
+
+    // Render chat history
+    function renderChatHistory() {
+      chatHistoryEl.innerHTML = "";
+      chats.forEach(chat => {
+        const div = document.createElement('div');
+        div.className = 'chat-sidebar-item' + (chat.id === activeChat?.id ? ' active' : '');
+        div.innerHTML = `
+          <span>${chat.title}</span>
+          <button onclick="deleteChat(${chat.id})" style="border:none;background:none;color:#888;cursor:pointer;">🗑</button>
+        `;
+        div.onclick = () => selectChat(chat.id);
+        chatHistoryEl.appendChild(div);
+      });
+    }
+
+    // Select chat
+    function selectChat(id) {
+      activeChat = chats.find(c => c.id === id);
+      renderChatHistory();
+      renderMessages();
+    }
+
+    // Delete chat
+    function deleteChat(id) {
+      chats = chats.filter(c => c.id !== id);
+      if (activeChat?.id === id) activeChat = null;
+      renderChatHistory();
+      renderMessages();
+    }
+
+    // Render messages
+    function renderMessages() {
+      chatMessagesEl.innerHTML = "";
+      if (!activeChat) {
+        emptyChatEl.style.display = "flex";
+        chatMessagesEl.appendChild(emptyChatEl);
+        return;
+      }
+      emptyChatEl.style.display = "none";
+      activeChat.messages.forEach(msg => {
+        const msgDiv = document.createElement('div');
+        msgDiv.className = `chat-message ${msg.sender}`;
+        msgDiv.innerHTML = `<div class="chat-bubble ${msg.sender}">${msg.text}</div>`;
+        chatMessagesEl.appendChild(msgDiv);
+      });
+      chatMessagesEl.scrollTop = chatMessagesEl.scrollHeight;
+    }
+
+    // Handle sending a message
+    function handleSend() {
+      const text = userInputEl.value.trim();
+      if (!text || !activeChat) return;
+
+      const userMsg = { sender: "user", text };
+      activeChat.messages.push(userMsg);
+      userInputEl.value = "";
+
+      // Generate local bot response (simple rule-based)
+      const botMsg = generateBotResponse(text);
+      activeChat.messages.push({ sender: "bot", text: botMsg });
+
+      // Update chat title (first message)
+      if (activeChat.messages.length === 2) {
+        activeChat.title = text.slice(0, 25) + "...";
+      }
+
+      renderChatHistory();
+      renderMessages();
+    }
+
+    // Basic local "AI" logic (replace with your dataset logic if needed)
+    function generateBotResponse(input) {
+      const lower = input.toLowerCase();
+      if (lower.includes("fever") && lower.includes("cough"))
+        return "It could be a sign of a viral infection like the flu. Stay hydrated and consult a doctor if it persists.";
+      if (lower.includes("headache"))
+        return "Headaches can be caused by stress, dehydration, or tension. Try resting and drinking water.";
+      if (lower.includes("stomach"))
+        return "Stomach pain may indicate indigestion or infection. Monitor symptoms and avoid spicy food.";
+      return "I recommend noting down all your symptoms and consulting a healthcare provider for accurate diagnosis.";
+    }
+
+    // Event listeners
+    sendBtn.addEventListener('click', handleSend);
+    userInputEl.addEventListener('keypress', e => {
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        handleSend();
+      }
+    });
+    newChatBtn.addEventListener('click', startNewChat);
+
+    // Initialize
+    startNewChat();
+  </script>
+  <script src="../js/script.js"></script>
+</body>
+</html>
