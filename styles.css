@@ -1,0 +1,793 @@
+html {
+  background-color: #121212;
+}
+
+body {
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+ 
+/* ===========================
+   Global Styles
+=========================== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+  line-height: 1.6;
+  background-color: #fafafa;
+  color: #333;
+}
+
+/* ===========================
+   Header
+=========================== */
+header {
+  background: white;
+  padding: 1.5rem 5%;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.header-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #000;
+}
+
+.logo-icon {
+  width: 35px;
+  height: 35px;
+  background: #dc2626;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.5rem;
+}
+
+nav ul {
+  display: flex;
+  gap: 2rem;
+  list-style: none;
+}
+
+nav a {
+  text-decoration: none;
+  color: #333;
+  font-weight: 500;
+  transition: color 0.3s;
+}
+
+nav a:hover,
+nav a.active {
+  color: #dc2626;
+}
+
+/* ===========================
+   Page Visibility
+=========================== */
+.page {
+  display: none;
+}
+
+.page.active {
+  display: block;
+}
+
+/* ===========================
+   Home Page Styles
+=========================== */
+.hero {
+  text-align: center;
+  padding: 80px 5% 60px;
+  background: #fafafa;
+}
+
+.hero h1 {
+  font-size: 3rem;
+  margin-bottom: 1.5rem;
+  color: #000;
+}
+
+.hero p {
+  font-size: 1.2rem;
+  color: #555;
+  max-width: 900px;
+  margin: 0 auto 2.5rem;
+}
+
+/* CTA Button */
+.cta-button {
+  background: linear-gradient(135deg, #c0392b, #e74c3c);
+  color: #fff;
+  padding: 14px 45px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(192, 57, 43, 0.25);
+  text-decoration: none; /* ← removes underline */
+  display: inline-block; /* ensures padding applies properly */
+}
+
+
+.cta-button:hover {
+  background: linear-gradient(135deg, #a93226, #cd3d2c);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(192, 57, 43, 0.35);
+}
+
+/* About Section */
+.about {
+  max-width: 900px;
+  margin: 80px auto;
+  text-align: center;
+  background: #fff;
+  padding: 3rem 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.about h2 {
+  font-size: 2rem;
+  color: #111;
+  margin-bottom: 1.5rem;
+  font-weight: 700;
+  border-bottom: 3px solid #dc2626;
+  display: inline-block;
+  padding-bottom: 0.5rem;
+}
+
+.about p {
+  color: #555;
+  line-height: 1.8;
+  font-size: 1.1rem;
+  max-width: 800px;
+  margin: 0 auto 1rem;
+}
+
+/* ===========================
+   Diagnosis Chatbot Page
+=========================== */
+.diagnosis-container {
+  max-width: 900px;
+  margin: 80px auto;
+  background: #fff;
+  padding: 2.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  text-align: center;
+}
+
+.diagnosis-container h2 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  color: #000;
+}
+
+.diagnosis-container p {
+  color: #555;
+  margin-bottom: 2rem;
+}
+
+.chatbot-box {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  height: 400px;
+  padding: 1rem;
+  background: #fafafa;
+  overflow-y: auto;
+}
+
+#chat-container {
+  background: var(--bg-secondary, #f5f5f5);
+  padding: 1rem;
+  border-radius: 10px;
+  height: 400px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.user-message,
+.bot-message {
+  padding: 10px 14px;
+  border-radius: 10px;
+  max-width: 75%;
+  line-height: 1.5;
+  word-break: break-word;
+  font-size: 1rem;
+}
+
+.user-message {
+  background: #2563eb;
+  color: white;
+  align-self: flex-end;
+}
+
+.bot-message {
+  background: #e5e7eb;
+  color: #111;
+  align-self: flex-start;
+}
+
+.dark-mode #chat-container {
+  background: #1e293b;
+}
+
+.dark-mode .user-message {
+  background: #3b82f6;
+}
+
+.dark-mode .bot-message {
+  background: #334155;
+  color: #e2e8f0;
+}
+
+/* Typing indicator animation */
+.typing {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.typing .dot {
+  width: 8px;
+  height: 8px;
+  background-color: #6b7280;
+  border-radius: 50%;
+  animation: blink 1.2s infinite ease-in-out;
+}
+
+.typing .dot:nth-child(1) {
+  animation-delay: 0s;
+}
+.typing .dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.typing .dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes blink {
+  0%, 80%, 100% { opacity: 0.2; }
+  40% { opacity: 1; }
+}
+
+/* Dark mode version */
+.dark-mode .typing .dot {
+  background-color: #e2e8f0;
+}
+
+
+/* ===========================
+   📩 Contact Page Styling
+=========================== */
+
+/* Default (Light Mode) */
+.contact-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 90vh;
+  background: linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%);
+  transition: background-color 0.4s ease, color 0.4s ease, background 0.4s ease;
+  padding: 2rem;
+}
+
+.contact-form {
+  background: #ffffff;
+  color: #333;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  width: 100%;
+  max-width: 420px;
+  text-align: center;
+  transition: background-color 0.4s ease, color 0.4s ease, box-shadow 0.4s ease;
+}
+
+.contact-form h2 {
+  margin-bottom: 0.5rem;
+  color: #111;
+}
+
+.contact-form p {
+  color: #555;
+  margin-bottom: 1.5rem;
+}
+
+.contact-form input,
+.contact-form textarea {
+  width: 100%;
+  padding: 0.9rem;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 1rem;
+  background: #fafafa;
+  color: #000;
+  margin-bottom: 1rem;
+  transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease;
+}
+
+.contact-form input::placeholder,
+.contact-form textarea::placeholder {
+  color: #777;
+}
+
+.submit-button {
+  display: block;
+  width: 100%;
+  background: #c0392b;
+  color: white;
+  border: none;
+  padding: 0.9rem;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.submit-button:hover {
+  background: #a93226;
+}
+
+/* ===========================
+   🌙 Dark Mode Contact Page
+=========================== */
+body.dark-mode .contact-page {
+  background: linear-gradient(135deg, #0f0f0f, #1a1a1a);
+  color: #f0f0f0;
+}
+
+body.dark-mode .contact-form {
+  background: #181818;
+  color: #e0e0e0;
+  box-shadow: 0 4px 15px rgba(255, 255, 255, 0.05);
+}
+
+body.dark-mode .contact-form h2 {
+  color: #ffffff;
+}
+
+body.dark-mode .contact-form p {
+  color: #cccccc;
+}
+
+body.dark-mode .contact-form input,
+body.dark-mode .contact-form textarea {
+  background: #242424;
+  color: #eee;
+  border: 1px solid #444;
+}
+
+body.dark-mode .contact-form input::placeholder,
+body.dark-mode .contact-form textarea::placeholder {
+  color: #888;
+}
+
+body.dark-mode .submit-button {
+  background: #b3261e;
+  color: white;
+}
+
+body.dark-mode .submit-button:hover {
+  background: #e53935;
+}
+
+body.dark-mode .contact-form {
+  box-shadow: 0 0 15px rgba(192, 57, 43, 0.25);
+}
+
+
+/* ===========================
+   Footer Section
+=========================== */
+footer {
+  background: #f5f5f5;
+  padding: 60px 5% 0;
+  color: #333;
+  font-size: 0.95rem;
+}
+
+/* Footer Content (2-column layout) */
+.footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 3rem;
+  padding-bottom: 40px;
+  border-bottom: 1px solid rgba(0,0,0,0.1);
+}
+
+.footer-section h3 {
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #000;
+}
+
+.footer-section ul {
+  list-style: none;
+  padding: 0;
+}
+
+.footer-section li {
+  margin-bottom: 0.6rem;
+}
+
+.footer-section a {
+  color: #555;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.footer-section a:hover {
+  color: #dc2626;
+}
+
+/* Red Contact Info Bar */
+.contact-info {
+  background: #dc2626;
+  color: white;
+  padding: 20px 5%;
+  text-align: center;
+  font-size: 1rem;
+}
+
+.contact-info a {
+  color: white;
+  text-decoration: underline;
+}
+
+.contact-info a:hover {
+  color: #ffe5e5;
+}
+
+/* Copyright Bar */
+.copyright {
+  background: white;
+  text-align: center;
+  padding: 20px;
+  font-size: 0.9rem;
+  color: #666;
+  border-top: 1px solid #eee;
+}
+
+
+/* ===========================
+   Responsive Design
+=========================== */
+@media (max-width: 900px) {
+  .hero h1 {
+    font-size: 2.2rem;
+  }
+
+  .cta-button {
+    padding: 12px 35px;
+    font-size: 1rem;
+  }
+
+  .about {
+    margin: 50px 1rem;
+    padding: 2rem 1.5rem;
+  }
+
+  .diagnosis-container {
+    margin: 50px 1rem;
+  }
+
+  .contact-form {
+    max-width: 100%;
+    margin: 0 1rem;
+  }
+}
+
+/* ===========================
+   🌙 Dark Mode Styling
+=========================== */
+
+/* Toggle Button */
+.theme-toggle {
+  background: none;
+  border: none;
+  font-size: 1.4rem;
+  cursor: pointer;
+  color: #333;
+  transition: color 0.3s ease;
+}
+
+.theme-toggle:hover {
+  color: #dc2626;
+}
+
+/* Dark Theme Base */
+body.dark-mode {
+  background-color: #121212;
+  color: #e0e0e0;
+}
+
+/* Header */
+body.dark-mode header {
+  background-color: #1f1f1f;
+  box-shadow: 0 2px 5px rgba(255, 255, 255, 0.05);
+}
+
+body.dark-mode .logo {
+  color: #fff;
+}
+
+body.dark-mode nav a {
+  color: #ccc;
+}
+
+body.dark-mode nav a:hover,
+body.dark-mode nav a.active {
+  color: #ff5b5b;
+}
+
+/* Buttons */
+body.dark-mode .cta-button {
+  background: linear-gradient(135deg, #b3261e, #e53935);
+  color: white;
+  box-shadow: 0 4px 10px rgba(255, 90, 90, 0.25);
+}
+
+/* Sections */
+body.dark-mode .hero,
+body.dark-mode .about,
+body.dark-mode .diagnosis-container,
+body.dark-mode .contact-form {
+  background-color: #1e1e1e;
+  color: #ddd;
+  box-shadow: 0 2px 8px rgba(255, 255, 255, 0.05);
+}
+
+/* Inputs */
+body.dark-mode input,
+body.dark-mode textarea {
+  background-color: #2a2a2a;
+  border: 1px solid #444;
+  color: #eee;
+}
+
+/* Footer */
+body.dark-mode footer {
+  background: #1a1a1a;
+  color: #bbb;
+}
+
+body.dark-mode .contact-info {
+  background: #b3261e;
+}
+
+body.dark-mode .footer-section a:hover {
+  color: #ff7b7b;
+}
+
+body, header, .hero, .about, .contact-form, .diagnosis-container {
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+/* ===========================
+   🌙 Dark Mode Text Colors
+=========================== */
+
+/* Base text */
+body.dark-mode {
+  color: #e5e5e5; /* lighter gray for readability */
+}
+
+/* Headings */
+body.dark-mode h1,
+body.dark-mode h2,
+body.dark-mode h3,
+body.dark-mode h4,
+body.dark-mode h5 {
+  color: #ffffff; /* bright white for strong contrast */
+}
+
+/* Paragraphs and labels */
+body.dark-mode p,
+body.dark-mode label,
+body.dark-mode li,
+body.dark-mode span {
+  color: #cccccc;
+}
+
+/* Links (default + hover) */
+body.dark-mode a {
+  color: #ff7676; /* soft red accent */
+}
+
+body.dark-mode a:hover {
+  color: #ffb3b3;
+}
+
+/* Navigation links */
+body.dark-mode nav a {
+  color: #ccc;
+}
+
+body.dark-mode nav a:hover,
+body.dark-mode nav a.active {
+  color: #ff5b5b;
+}
+
+/* Inputs and placeholders */
+body.dark-mode input,
+body.dark-mode textarea {
+  background-color: #2b2b2b;
+  border: 1px solid #444;
+  color: #eee;
+}
+
+body.dark-mode input::placeholder,
+body.dark-mode textarea::placeholder {
+  color: #888;
+}
+
+/* Buttons */
+body.dark-mode .cta-button,
+body.dark-mode .submit-button {
+  color: #fff;
+  background: linear-gradient(135deg, #b3261e, #e53935);
+  box-shadow: 0 4px 12px rgba(255, 90, 90, 0.25);
+}
+
+/* Section backgrounds */
+body.dark-mode .hero,
+body.dark-mode .about,
+body.dark-mode .contact-form,
+body.dark-mode .diagnosis-container {
+  background-color: #1c1c1c;
+  color: #e0e0e0;
+}
+
+/* Footer */
+body.dark-mode footer {
+  background: #1a1a1a;
+  color: #bdbdbd;
+}
+
+body.dark-mode .footer-section h3 {
+  color: #fff;
+}
+
+body.dark-mode .footer-section a {
+  color: #ccc;
+}
+
+body.dark-mode .footer-section a:hover {
+  color: #ff7b7b;
+}
+
+body.dark-mode .contact-info {
+  background: #b3261e;
+  color: #fff;
+}
+
+/* ===========================
+   🌙 Dark Mode - Chatbot Page
+=========================== */
+
+/* Main chat container */
+body.dark-mode .chat-container,
+body.dark-mode .diagnosis-container {
+  background-color: #1a1a1a;
+  color: #e0e0e0;
+  border: none;
+}
+
+/* Sidebar */
+body.dark-mode .chat-sidebar {
+  background-color: #181818;
+  border-right: 1px solid #333;
+}
+
+body.dark-mode .chat-sidebar button,
+body.dark-mode .chat-sidebar .new-chat {
+  background-color: #242424;
+  color: #ccc;
+  border: 1px solid #333;
+}
+
+body.dark-mode .chat-sidebar button:hover {
+  background-color: #2b2b2b;
+}
+
+/* Chat window / main area */
+body.dark-mode .chat-window,
+body.dark-mode .chat-main {
+  background-color: #121212;
+  color: #ddd;
+  border-left: 1px solid #333;
+}
+
+/* Individual messages */
+body.dark-mode .message,
+body.dark-mode .user-message,
+body.dark-mode .bot-message {
+  background-color: #1f1f1f;
+  color: #e0e0e0;
+  border: 1px solid #2e2e2e;
+}
+
+/* ===========================
+   🌙 Dark Mode - Chat Input Area Fix
+=========================== */
+
+/* Chat input area container */
+body.dark-mode .chat-input-container {
+  background-color: #181818; /* match dark theme */
+  border-top: 1px solid #333;
+}
+
+/* Input field itself */
+body.dark-mode .chat-input {
+  background-color: #2a2a2a;
+  color: #eee;
+  border: 1px solid #444;
+}
+
+body.dark-mode .chat-input::placeholder {
+  color: #888;
+}
+
+/* Send button */
+body.dark-mode .send-button {
+  background-color: #c0392b;
+  color: white;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+body.dark-mode .send-button:hover {
+  background-color: #a93226;
+}
+
+
+/* Scrollbar styling (optional) */
+body.dark-mode ::-webkit-scrollbar {
+  width: 10px;
+}
+
+body.dark-mode ::-webkit-scrollbar-thumb {
+  background: #333;
+  border-radius: 5px;
+}
+
+body.dark-mode ::-webkit-scrollbar-thumb:hover {
+  background: #444;
+}
+
+.chat-container, .chat-sidebar, .chat-window, .chat-input, .send-button {
+  transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease;
+}
+
+.chat-input-area, .chat-input, .send-button {
+  transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease;
+}
