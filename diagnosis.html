@@ -128,38 +128,89 @@
     }
 
     // Handle sending a message
-    function handleSend() {
+    async function handleSend() {
       const text = userInputEl.value.trim();
       if (!text || !activeChat) return;
 
       const userMsg = { sender: "user", text };
       activeChat.messages.push(userMsg);
       userInputEl.value = "";
-
-      // Generate local bot response (simple rule-based)
-      const botMsg = generateBotResponse(text);
-      activeChat.messages.push({ sender: "bot", text: botMsg });
-
-      // Update chat title (first message)
-      if (activeChat.messages.length === 2) {
-        activeChat.title = text.slice(0, 25) + "...";
-      }
-
-      renderChatHistory();
       renderMessages();
+
+      // Show typing bubble
+      const typingDiv = document.createElement("div");
+      typingDiv.className = "chat-message bot";
+      typingDiv.innerHTML = `<div class="chat-bubble bot">...</div>`;
+      chatMessagesEl.appendChild(typingDiv);
+      chatMessagesEl.scrollTop = chatMessagesEl.scrollHeight;
+
+      try {
+        // ✅ Wait for backend response
+        const botReply = await generateBotResponse(text);
+
+        chatMessagesEl.removeChild(typingDiv);
+
+        activeChat.messages.push({ sender: "bot", text: botReply });
+
+        if (activeChat.messages.length === 2) {
+          activeChat.title = text.slice(0, 25) + "...";
+        }
+
+        renderChatHistory();
+        renderMessages();
+
+      } catch (err) {
+        console.error("Error:", err);
+        chatMessagesEl.removeChild(typingDiv);
+        activeChat.messages.push({
+          sender: "bot",
+          text: "❌ Could not connect to the diagnosis server.",
+        });
+        renderMessages();
+      }
     }
 
-    // Basic local "AI" logic (replace with your dataset logic if needed)
-    function generateBotResponse(input) {
-      const lower = input.toLowerCase();
-      if (lower.includes("fever") && lower.includes("cough"))
-        return "It could be a sign of a viral infection like the flu. Stay hydrated and consult a doctor if it persists.";
-      if (lower.includes("headache"))
-        return "Headaches can be caused by stress, dehydration, or tension. Try resting and drinking water.";
-      if (lower.includes("stomach"))
-        return "Stomach pain may indicate indigestion or infection. Monitor symptoms and avoid spicy food.";
-      return "I recommend noting down all your symptoms and consulting a healthcare provider for accurate diagnosis.";
+async function generateBotResponse(input) {
+  try {
+    const response = await fetch("https://web-production-2e6ba.up.railway.app/predict", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        message: input,
+        conversation: activeChat.messages.map(msg => ({
+          patient: msg.sender === "user" ? msg.text : undefined,
+          doctor: msg.sender === "bot" ? msg.text : undefined
+        }))
+      }),
+    });
+
+    // ✅ Check if response is ok
+    if (!response.ok) {
+      console.error("Server returned:", response.status);
+      return "⚠️ Server error: " + response.status;
     }
+
+    // ✅ Parse JSON
+    const data = await response.json();
+    console.log("Backend Response:", data);
+
+    // ✅ Return the backend's message
+    if (data && data.response) {
+      return data.response;
+    }
+
+    if (data && data.error) {
+      return "⚠️ " + data.error;
+    }
+
+    return "⚕️ No diagnosis could be generated right now.";
+
+  } catch (err) {
+    console.error("Backend Error:", err);
+    return "❌ Unable to reach backend API.";
+  }
+}
+
 
     // Event listeners
     sendBtn.addEventListener('click', handleSend);
