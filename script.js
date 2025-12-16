@@ -78,7 +78,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-const BACKEND_URL = "https://web-production-2e6ba.up.railway.app";
+const BACKEND_URL = "https://mrd-rag-backend.onrender.com";
 
 async function sendMessageToBackend(userMessage) {
   try {
