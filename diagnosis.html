@@ -172,7 +172,7 @@
 
 async function generateBotResponse(input) {
   try {
-    const response = await fetch("https://web-production-2e6ba.up.railway.app/predict", {
+    const response = await fetch("https://mrd-rag-backend.onrender.com", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
